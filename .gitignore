@@ -1,0 +1,22 @@
+protochain/__tests__/blockchain.test.ts
+
+# TypeScript
+# Add TypeScript-specific ignores here
+
+# Common
+.DS_Store
+Thumbs.db
+*.log
+*.bak
+*.tmp
+*.swp
+*~
+
+# IDE and editor generated files
+.idea/
+*.sublime-*
+
+# Local environment files
+.env
+.env.local
+.env.*.local
