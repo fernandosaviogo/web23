@@ -12,7 +12,11 @@ export default class Blockchain {
      * Creates a new blockchain
      */
     constructor(){
-        this.blocks = [new Block(this.nextIndex, "", "genesis Block")];
+        this.blocks = [new Block({
+            index: this.nextIndex,
+            previousHash: "",
+            data: "genesis Block"
+        } as Block)];
         this.nextIndex++;
     }
   
