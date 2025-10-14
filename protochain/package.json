@@ -7,7 +7,7 @@
     "dev": "npx nodemon ./src/blockchain.ts --watch ./src -e ts",
     "start": "node ./dist/blockchain.js",
     "test": "jest",
-    "blockchain": "ts-node ./src/server/blockchainServer.ts"
+    "blockchain": "ts-node ./src/server/blockchainServer.ts --run"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +18,9 @@
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/morgan": "^1.9.10",
+    "@types/supertest": "^6.0.3",
     "jest": "^30.2.0",
+    "supertest": "^7.1.4",
     "ts-jest": "^29.4.4",
     "typescript": "^5.9.3"
   },
