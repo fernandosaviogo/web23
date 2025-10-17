@@ -1,3 +1,5 @@
+import Transaction from "./transaction";
+
 /**
  * The blochain interface
  */
@@ -7,5 +9,5 @@ export default interface  BlockInfo {
     difficulty: number;
     maxDifficulty: number;
     feePerTx: number;
-    data: string;
+    transaction: Transaction[];
 }
