@@ -2,7 +2,7 @@ import TransactionType from "../transactionType"
 import Validation from "../validation";
 
 /**
- * Transaction class
+ * Mocked transaction class
  */
 export default class Transaction {
     type: TransactionType;

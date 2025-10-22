@@ -152,7 +152,7 @@ describe("Block tests", () => {
             index: 1, 
             previousHash: genesis.hash,
             transactions: [new Transaction({
-                data: ""
+                data: ''
             } as Transaction)]
         } as Block);
         const valid = block.isValid(genesis.hash, genesis.index, exampleDifficulty);

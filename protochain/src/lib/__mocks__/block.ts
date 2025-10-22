@@ -1,5 +1,5 @@
 import Validation from '../validation';
-import Transaction from '../transaction';
+import Transaction from './transaction';
 
 /**
  * Mocked block class

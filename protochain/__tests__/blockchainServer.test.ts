@@ -2,6 +2,7 @@ import request from 'supertest';
 import { describe, expect, test, jest } from '@jest/globals';
 import { app } from '../src/server/blockchainServer';
 import Block from '../src/lib/block';
+import Transaction from '../src/lib/transaction';
 
 jest.mock('../src/lib/block');
 jest.mock('../src/lib/blockchain');
@@ -77,5 +78,57 @@ describe('BlockchainServer Tests', () => {
 
         expect(response.status).toEqual(400);
     })
+
+    // Testes transaction
+    
+    test('GET /transactions/{:hash} - Should get transaction', async ()=> {
+        const response = await request(app)
+            .get('/transactions/abc');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.mempoolIndex).toEqual(0);
+    })
+
+    test('GET /transactions/ - Should get transaction (no hash)', async ()=> {
+        const response = await request(app)
+            .get('/transactions/');
+
+        expect(response.status).toEqual(200);
+    })
+
+    test('POS /transactions - Should add tx', async ()=> {
+        const tx = new Transaction({
+            data: 'tx1'
+        }as Transaction);
+
+        const response = await request(app)
+            .post('/transactions/')
+            .send(tx);
+
+        expect(response.status).toEqual(201);      
+    })
+
+    test('POS /transactions - Should NOT add tx', async ()=> {
+        const tx = new Transaction({
+            data: ''
+        }as Transaction);
+        
+        const response = await request(app)
+            .post('/transactions/')
+            .send(tx);
+
+        expect(response.status).toEqual(400);      
+    })
+
+    test('POS /transactions - Should add tx is undefined', async ()=> {
+        const tx = {}
+
+        const response = await request(app)
+            .post('/transactions/')
+            .send(tx);
+
+        expect(response.status).toEqual(422);      
+    })
+
 }) 
 

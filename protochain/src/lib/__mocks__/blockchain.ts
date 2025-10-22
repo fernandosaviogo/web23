@@ -3,11 +3,18 @@ import Validation from '../validation';
 import BlockInfo from '../blockInfo';
 import Transaction from './transaction';
 import TransactionType from '../transactionType';
+import TransactionSearch from '../transactionSearch';
 
 /**
  * Mocked Blockchain class
  */
 export default class Blockchain {
+    // add para correção com o chat GPT
+    static readonly DIFFICULTY_FACTOR = 5;
+    static readonly TX_PER_BLOCK = 2;
+    static readonly MAX_DIFFICULTY = 62;
+
+    mempool: Transaction[]; 
     blocks: Block[];
     nextIndex: number = 0;
 
@@ -15,6 +22,7 @@ export default class Blockchain {
      * Creates a new mocked blockchain
      */
     constructor(){
+        this.mempool = []; 
         this.blocks = [new Block({
             index: 0,
             hash: 'abc',
@@ -41,6 +49,16 @@ export default class Blockchain {
         return new Validation();
     }
 
+    // add correcçao do copilot (teste: GET /transactions/:hash - Should return transaction details)
+    addTransaction(transaction: Transaction): Validation {
+        const validation = transaction.isValid();
+        if (!validation.success) return validation;
+
+        this.mempool.push(transaction);
+        return new Validation();
+    }
+
+
     getBlock(hash: string): Block | undefined {
         return this.blocks.find(b => b.hash === hash);
     }
@@ -65,4 +83,14 @@ export default class Blockchain {
             maxDifficulty: 62
         } as BlockInfo;
     }
+
+    getTransaction(hash: string): TransactionSearch {
+        return {
+            mempoolIndex: 0,
+            transaction: {
+                hash
+            }
+        } as TransactionSearch;
+    }
+
 }
