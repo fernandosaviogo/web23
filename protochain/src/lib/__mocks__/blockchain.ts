@@ -4,6 +4,7 @@ import BlockInfo from '../blockInfo';
 import Transaction from './transaction';
 import TransactionType from '../transactionType';
 import TransactionSearch from '../transactionSearch';
+import TransactionInput from './transactionInput';
 
 /**
  * Mocked Blockchain class
@@ -28,7 +29,7 @@ export default class Blockchain {
             hash: 'abc',
             previousHash: "",
             transactions: [new Transaction({
-                data: 'tx1',
+                txInput: new TransactionInput(),
                 type: TransactionType.FEE
             } as Transaction)],
             timestamp: Date.now()
@@ -52,10 +53,11 @@ export default class Blockchain {
     // add correcçao do copilot (teste: GET /transactions/:hash - Should return transaction details)
     addTransaction(transaction: Transaction): Validation {
         const validation = transaction.isValid();
-        if (!validation.success) return validation;
+        if (!validation.success) 
+            return new Validation(false, "invalid tx: " + validation.message);
 
         this.mempool.push(transaction);
-        return new Validation();
+        return new Validation(true, transaction.hash);
     }
 
 
@@ -74,7 +76,7 @@ export default class Blockchain {
     getNextBlock(): BlockInfo {
         return {
             transaction: [new Transaction({
-                data: new Date().toString()
+                txInput: new TransactionInput()
             } as Transaction)],
             difficulty: 0,
             previousHash: this.getLastBlock().hash,
