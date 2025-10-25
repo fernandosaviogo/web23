@@ -65,11 +65,17 @@ export default class Block {
      * @returns returns if the block is valid
      */
     isValid(previousHash: string, previousIndex: number, difficulty: number): Validation {
-        
         // Validation of internal block transactions
         if(this.transactions && this.transactions.length) {
-            if(this.transactions.filter(tx => tx.type === TransactionType.FEE).length > 1)
+            const feeTxs = this.transactions.filter(tx => tx.type === TransactionType.FEE)
+            if(!feeTxs.length)
+                return new Validation(false, "No fee tx.");
+
+            if(feeTxs.length > 1)
                 return new Validation(false, "Too many fees.");
+            
+            if(feeTxs[0]!.to !== this.miner)
+                return new Validation(false, "Invalid fee tx: different from miner.");
             
             const validations = this.transactions.map(tx => tx.isValid());
             const errors = validations.filter(v => !v.success).map(v => v.message);
@@ -81,7 +87,7 @@ export default class Block {
         if(this.timestamp < 1) return new Validation(false, "Invalid timestamp.");
         if(this.previousHash !== previousHash) return new Validation(false, "Invalid previous hash.");
         if(!this.nonce || !this.miner) return new Validation(false, "No Mined");
-
+        
         const prefix = new Array(difficulty + 1).join("0");
         if(this.hash !== this.getHash() || !this.hash.startsWith(prefix)) return new Validation(false, "Invalid hash.");
 

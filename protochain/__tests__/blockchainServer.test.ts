@@ -83,7 +83,6 @@ describe('BlockchainServer Tests', () => {
     })
 
     // Testes transaction
-    
     test('GET /transactions/{:hash} - Should get transaction', async ()=> {
         const response = await request(app)
             .get('/transactions/abc');
@@ -112,7 +111,7 @@ describe('BlockchainServer Tests', () => {
         expect(response.status).toEqual(201);      
     })
     
-    test('POS /transactions - Should NOT add tx', async ()=> {
+    test('POS /transactions - invalid tx', async ()=> {
         const txInput = new TransactionInput();
         txInput.amount = -1;
         
