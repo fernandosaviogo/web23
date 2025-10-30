@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for lib/wallet.ts</title>
+    <title>Code coverage report for lib/transactionOutput.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">lib</a> wallet.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">lib</a> transactionOutput.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/29</span>
+                <span class='fraction'>28/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/29</span>
+                <span class='fraction'>28/28</span>
             </div>
         
             
@@ -90,62 +90,59 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span></td><td class="text"><pre class="prettyprint lang-js">import * as ecc from 'tiny-secp256k1';
-import ECPairFactory, { ECPairInterface } from 'ecpair';
-&nbsp;
-const ECPair = ECPairFactory(ecc);  // Objeto para geração e recupeção de chaves
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">22x</span></td><td class="text"><pre class="prettyprint lang-js">import Validation from "./validation";
+import sha256 from "crypto-js/sha256";
 &nbsp;
 /**
- * wallet class
+ * Transaction Output class
  */
-export default class Wallet{
+export default class TransactionOutput {
+    toAddress: string;
+    amount: number;
+    tx?: string;
 &nbsp;
-    privateKey: string;
-    publicKey: string;
+    constructor(txOutput?: TransactionOutput){
+        this.toAddress = txOutput?.toAddress || "";
+        this.amount = txOutput?.amount || 0;
+        this.tx = txOutput?.tx || "";
+    }
 &nbsp;
-    constructor(wifOrPrivateKey?: string) {
-        let keys;
+    isValid(): Validation {
+        if(this.amount &lt; 1)
+            return new Validation(false, 'Negative amount.');
 &nbsp;
-        if(wifOrPrivateKey) {
-            if(wifOrPrivateKey.length === 64)
-                keys = ECPair.fromPrivateKey(Buffer.from(wifOrPrivateKey, "hex"));
-            else
-                keys = ECPair.fromWIF(wifOrPrivateKey);   
-        }else
-            keys = ECPair.makeRandom();
+        return new Validation();
+    }
 &nbsp;
-        /* c8 ignore next */    
-        this.privateKey = keys.privateKey?.toString("hex") || "";
-        this.publicKey = keys.publicKey?.toString("hex");
+    getHash(): string {
+        return sha256(this.toAddress + this.amount).toString();
     }
 }</pre></td></tr></table></pre>
 

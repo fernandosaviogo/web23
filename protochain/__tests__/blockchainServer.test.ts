@@ -4,11 +4,14 @@ import { app } from '../src/server/blockchainServer';
 import Block from '../src/lib/block';
 import Transaction from '../src/lib/transaction';
 import TransactionInput from '../src/lib/transactionInput';
+import TransactionOutput from '../src/lib/transactionOutput';
+import Wallet from '../src/lib/wallet';
 
 jest.mock('../src/lib/block');
 jest.mock('../src/lib/blockchain');
 jest.mock('../src/lib/transaction');
 jest.mock('../src/lib/transactionInput');
+jest.mock('../src/lib/transactionOutput');
 
 // Testa requisições da blockchainServer 
 describe('BlockchainServer Tests', () => {
@@ -49,6 +52,15 @@ describe('BlockchainServer Tests', () => {
             .get('/blocks/-1');
 
         expect(response.status).toEqual(404);
+    })
+
+    test('GET /wallets/{:wallet} - Should return status', async ()=> {
+        const wallet = new Wallet();
+
+        const response = await request(app)
+            .get('/wallets/${wallet.address}');
+
+        expect(response.status).toEqual(200);
     })
 
     test('POS /blocks - Should add block', async ()=> {
@@ -100,8 +112,8 @@ describe('BlockchainServer Tests', () => {
 
     test('POS /transactions - Should add tx', async ()=> {
         const tx = new Transaction({
-            txInput: new TransactionInput(),
-            to: "carteiraTo"
+            txInputs: [new TransactionInput()],
+            txOutputs: [new TransactionOutput()]
         }as Transaction);
 
         const response = await request(app)
@@ -111,18 +123,19 @@ describe('BlockchainServer Tests', () => {
         expect(response.status).toEqual(201);      
     })
     
+    // verificar
     test('POS /transactions - invalid tx', async ()=> {
-        const txInput = new TransactionInput();
-        txInput.amount = -1;
-        
         const tx = new Transaction({
-            txInput
+            txInputs: [new TransactionInput()],
+            txOutputs: [new TransactionOutput()],
+            hash: 'abc',
+            timestamp: -1
         }as Transaction);
 
         const response = await request(app)
             .post('/transactions/')
             .send(tx);
-
+        
         expect(response.status).toEqual(400);      
     })
 

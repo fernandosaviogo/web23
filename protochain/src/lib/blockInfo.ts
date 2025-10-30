@@ -9,5 +9,5 @@ export default interface  BlockInfo {
     difficulty: number;
     maxDifficulty: number;
     feePerTx: number;
-    transaction: Transaction[];
+    transactions: Transaction[];
 }
