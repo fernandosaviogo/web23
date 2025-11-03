@@ -54,15 +54,6 @@ describe('BlockchainServer Tests', () => {
         expect(response.status).toEqual(404);
     })
 
-    test('GET /wallets/{:wallet} - Should return status', async ()=> {
-        const wallet = new Wallet();
-
-        const response = await request(app)
-            .get('/wallets/${wallet.address}');
-
-        expect(response.status).toEqual(200);
-    })
-
     test('POS /blocks - Should add block', async ()=> {
         const block = new Block({
             index: 1
@@ -123,7 +114,6 @@ describe('BlockchainServer Tests', () => {
         expect(response.status).toEqual(201);      
     })
     
-    // verificar
     test('POS /transactions - invalid tx', async ()=> {
         const tx = new Transaction({
             txInputs: [new TransactionInput()],
@@ -147,6 +137,16 @@ describe('BlockchainServer Tests', () => {
             .send(tx);
 
         expect(response.status).toEqual(422);      
+    })
+
+    // Testes da wallet
+    test('GET /wallets/{:wallet} - Should get balance', async ()=> {
+
+        const response = await request(app)
+            .get('/wallets/abc');
+
+        expect(response.status).toEqual(200);
+        expect(response.body.balance).toEqual(10);
     })
 
 }) 

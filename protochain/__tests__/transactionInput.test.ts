@@ -1,12 +1,15 @@
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import TransactionInput from '../src/lib/transactionInput';
 import Wallet from '../src/lib/wallet';
+import TransactionOutput from '../src/lib/transactionOutput';
 
 
 describe("TransactionInput tests", () => {
 
     // dono da carteira de teste
     let alice: Wallet, bob: Wallet;
+
+    const exampleTx: string = "0dbaf3ea1f6ad770bdcfcb5885ff000c3cc02b06967bd62ec967711ddcb40964";
 
     // Cria a carteira para teste
     beforeAll(() => {
@@ -82,6 +85,19 @@ describe("TransactionInput tests", () => {
 
         const valid = txInput.isValid();
         expect(valid.success).toBeFalsy();
+    })
+
+    test('Should create from TXO', () => {
+        const txi = TransactionInput.fromTxo({
+            amount: 10,
+            toAddress: alice.publicKey,
+            tx: exampleTx
+        }as TransactionOutput);
+        txi.sign(alice.privateKey);
+
+        txi.amount = 11;
+        const result = txi.isValid();
+        expect(result.success).toBeFalsy();
     })
  
 })
